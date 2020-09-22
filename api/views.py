@@ -33,56 +33,34 @@ def coin_list(request):
 @api_view(['GET'])
 def market_cap(request):
     params = request.query_params.copy()
-    id = params.pop('id')[0]
-    url = f'{API_URL_BASE}coins/{id}/history'
-
-    if params:
-        url += '?'
-        for k, v in params.items():
-            if k == 'date':
-                gecko_date = _convert_date(v)
-                url += f'{k}={gecko_date}&'
-            else:
-                url += f'{k}={v}&'
-        url = url[:-1] # strip away extra '&'
-
-    # url = f'{API_URL_BASE}/coins/chainlink/history?id={id}&date={gecko_date}'
+    print(params)
+    err_msg = {
+        'detail': 'id, date and currency are required query params e.g '
+                  '/marketCap?id=chainlink&date=30/12/2017&currency=gbp'
+    }
     try:
+        id = params.pop('id')[0]
+        cur = params.pop('currency')[0]
+        gecko_date = _convert_date(params.pop('date')[0])
+        url = f'{API_URL_BASE}/coins/{id}/history?date={gecko_date}'
+
+        ''' In case of extra supported parameters '''
+        if params:
+            for k, v in params.items():
+                url += f'&{k}={v}'
+
         response = requests.get(url)
         response.raise_for_status()
-        return Response(json.loads(response.text))
+        price = {}
+        price[cur] = (json.loads(response.text)
+                      ['market_data']['current_price'].get(cur))
+        return Response(price)
+    except KeyError as key:
+        err_msg['error'] = f'{key} not provided'
+        return Response(err_msg, status=status.HTTP_400_BAD_REQUEST)
     except HTTPError as err:
-        err = {
-            'error': f'{err}', 
-            'detail': 'Required query params e.g ' 
-                      '/marketCap?id=chainlink&date=30/12/2017&currency=gbp'
-        }
-        return Response(err, status=status.HTTP_404_NOT_FOUND)
-
-
-# def _get_coin_history(params):
-#     if not params.get('date'):
-#         err = {
-#             'detail': 'date query parameter is required',
-#             'example': '/marketCap/chainlink?date=30/12/2017'
-#         }
-#         return Response(err, status=status.HTTP_400_BAD_REQUEST)
-
-#     gecko_date = _convert_date(params.get('date'))
-#     url = f'{API_URL_BASE}/coins/chainlink/history?id={id}&date={gecko_date}'
-#     try:
-#         response = requests.get(url)
-#         response.raise_for_status()
-#         return Response(json.loads(response.text))
-#     except HTTPError as err:
-#         print(f'HTTP error: {err}')
-
-
-# def _get_coin_list():
-#     url = f'{API_URL_BASE}/coins/list'
-#     response = requests.get(url)
-#     response.raise_for_status()
-#     return response
+        err_msg['error'] = f'{err}'
+        return Response(err_msg, status=status.HTTP_404_NOT_FOUND)
 
 
 def _convert_date(datestring):
