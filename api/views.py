@@ -33,7 +33,6 @@ def coin_list(request):
 @api_view(['GET'])
 def market_cap(request):
     params = request.query_params.copy()
-    print(params)
     err_msg = {
         'detail': 'id, date and currency are required query params e.g '
                   '/marketCap?id=chainlink&date=30/12/2017&currency=gbp'
@@ -43,8 +42,6 @@ def market_cap(request):
         cur = params.pop('currency')[0]
         gecko_date = _convert_date(params.pop('date')[0])
         url = f'{API_URL_BASE}coins/{id}/history?date={gecko_date}'
-        print('url to be requested')
-        print(url)
         ''' In case of extra supported parameters '''
         if params:
             for k, v in params.items():
@@ -54,7 +51,7 @@ def market_cap(request):
         response.raise_for_status()
         price = {}
         price[cur] = (json.loads(response.text)
-                      ['market_data'])
+                      ['market_data']['market_cap'][cur])
         return Response(price)
     except KeyError as key:
         err_msg['error'] = f'{key} not provided'
