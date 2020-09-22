@@ -8,7 +8,7 @@ Please visit [here](https://radiant-island-10503.herokuapp.com) to view a deploy
 Clone repo and install dependencies from requirements.txt file. You also can use a virtual environment which is recommended but optional:
 ```bash
 git clone git@github.com:drinkingjava/coingeckoapiwrapper.git && cd coingeckoapiwrapper
-python3 -m virtual -p python3.8 .env
+python3 -m virtualenv -p python3.8 .env
 source .env/bin/activate
 pip install -r requirements.txt
 ```
