@@ -2,7 +2,7 @@
 A python wrapper for the coingecko API written with [Django Rest Framework](https://www.django-rest-framework.org/)
 
 ## Setup Not Working for you ?
-Please visit here to view a deployed heroku app of this project.
+Please visit [here](https://radiant-island-10503.herokuapp.com) to view a deployed heroku app of this project.
 
 ## Setup
 Clone repo and install dependencies from requirements.txt file. You also can use a virtual environment which is recommended but optional:
