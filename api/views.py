@@ -22,7 +22,7 @@ def api_overview(request):
 @api_view(['GET'])
 def coin_list(request):
     try:
-        url = f'{API_URL_BASE}/coins/list'
+        url = f'{API_URL_BASE}coins/list'
         response = requests.get(url)
         response.raise_for_status()
         return Response(json.loads(response.text))
@@ -42,8 +42,9 @@ def market_cap(request):
         id = params.pop('id')[0]
         cur = params.pop('currency')[0]
         gecko_date = _convert_date(params.pop('date')[0])
-        url = f'{API_URL_BASE}/coins/{id}/history?date={gecko_date}'
-
+        url = f'{API_URL_BASE}coins/{id}/history?date={gecko_date}'
+        print('url to be requested')
+        print(url)
         ''' In case of extra supported parameters '''
         if params:
             for k, v in params.items():
@@ -53,7 +54,7 @@ def market_cap(request):
         response.raise_for_status()
         price = {}
         price[cur] = (json.loads(response.text)
-                      ['market_data']['market_cap'].get(cur))
+                      ['market_data'])
         return Response(price)
     except KeyError as key:
         err_msg['error'] = f'{key} not provided'
@@ -64,7 +65,6 @@ def market_cap(request):
 
 
 def _convert_date(datestring):
-    date_string = '30/12/2017'
     format_string = '%d/%m/%Y'
-    date_object = datetime.strptime(date_string, format_string)
+    date_object = datetime.strptime(datestring, format_string)
     return date_object.strftime('%d-%m-%Y')
