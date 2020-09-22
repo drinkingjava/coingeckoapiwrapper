@@ -37,3 +37,4 @@ does not change i.e when the API is upgraded to v4.
 1. Inside API overview, it may be easier for the user to be able to click on generated urls instead of typing them out manually
 2. Invest some time to look at unit testing and adding code coverage
 3. Better HTTP error handling. There could be edge cases where the reported errors may not be a 404 for example
+4. There are also edge cases where the user can query a coin date where the requested coin does exist at that time.
