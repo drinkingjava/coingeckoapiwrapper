@@ -44,3 +44,20 @@ does not change i.e when the API is upgraded to v4.
 ```bash
 python3.8 -m pip install pipenv
 ```
+
+## Heroku Deployment
+Procfile must exist and contain `web: gunicorn apiwrapper.wsgi`
+
+Add `import django_heroku` to top of settings.py
+
+Add `django_heroku.settings(locals())` to bottom of settings.py
+
+Heroku login with `heroku login`
+
+Create app with `heroku create`
+
+Push specific branch with `git push heroku <branchname>:master`
+
+Note heroku will run collectstatic if static directory is not setup then the deploy will fail.
+ 
+To bypass this use `heroku config:set DISABLE_COLLECTSTATIC=1`
