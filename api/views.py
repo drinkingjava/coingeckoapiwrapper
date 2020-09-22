@@ -53,7 +53,7 @@ def market_cap(request):
         response.raise_for_status()
         price = {}
         price[cur] = (json.loads(response.text)
-                      ['market_data']['current_price'].get(cur))
+                      ['market_data']['market_cap'].get(cur))
         return Response(price)
     except KeyError as key:
         err_msg['error'] = f'{key} not provided'
