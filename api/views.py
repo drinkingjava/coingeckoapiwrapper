@@ -35,7 +35,7 @@ def market_cap(request):
     params = request.query_params.copy()
     print(params)
     err_msg = {
-        'detail': 'id, date and currency are required query params e.g ' 
+        'detail': 'id, date and currency are required query params e.g '
                   '/marketCap?id=chainlink&date=30/12/2017&currency=gbp'
     }
     try:
@@ -48,11 +48,12 @@ def market_cap(request):
         if params:
             for k, v in params.items():
                 url += f'&{k}={v}'
-        
+
         response = requests.get(url)
         response.raise_for_status()
         price = {}
-        price[cur] = json.loads(response.text)['market_data']['current_price'].get(cur)
+        price[cur] = (json.loads(response.text)
+                      ['market_data']['current_price'].get(cur))
         return Response(price)
     except KeyError as key:
         err_msg['error'] = f'{key} not provided'
